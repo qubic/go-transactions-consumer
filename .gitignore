@@ -1,0 +1,43 @@
+# goland
+.idea
+.iml
+.run
+
+# embedded db
+
+store
+
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+*.tar
+*.gz
+*.tgz
+go-*-consumer
+
+# log file
+*.log
+
+# temporary files
+*~
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Go workspace file
+go.work
+go.work.sum
+
+# local config files
+.env
+*local*
+
+# ca certificate
+certs
+http_ca.crt
+

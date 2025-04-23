@@ -1,0 +1,22 @@
+services:
+  qubic-transactions-consumer:
+    image: ghcr.io/qubic/go-transactions-consumer:latest # set correct version
+    container_name: qubic-transactions-consumer
+    ports:
+      - "127.0.0.1:9998:9999"
+    environment:
+      QUBIC_TRANSACTIONS_CONSUMER_ELASTIC_ADDRESSES: "https://localhost:9200" # set elasticsearch url here
+      QUBIC_TRANSACTIONS_CONSUMER_BROKER_BOOTSTRAP_SERVERS: "localhost:9092" # set kafka url here
+      QUBIC_TRANSACTIONS_CONSUMER_ELASTIC_USERNAME: "enter-username-here" # enter elasticsearch username
+      QUBIC_TRANSACTIONS_CONSUMER_ELASTIC_PASSWORD: "enter-password-here" # enter elasticsearch password
+    volumes:
+      - ./certs/elastic/http_ca.crt:/app/http_ca.crt:ro
+    networks:
+      - qubic
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "--spider", "http://127.0.0.1:9998/status" ]
+      interval: 15s
+      timeout: 3s
+      retries: 3
+networks:
+  qubic:
