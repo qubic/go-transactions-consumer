@@ -50,9 +50,6 @@ func NewTransactionConsumer(client KafkaClient, elasticClient ElasticDocumentCli
 	}
 }
 
-type PollRecords func(_ context.Context, _ int) kgo.Fetches
-type CommitOffsets func(_ context.Context) error
-
 func (c *TransactionConsumer) Consume() error {
 	for {
 		count, err := c.consumeBatch()
