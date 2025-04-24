@@ -7,6 +7,7 @@ services:
     environment:
       QUBIC_TRANSACTIONS_CONSUMER_ELASTIC_ADDRESSES: "https://localhost:9200" # set elasticsearch url here
       QUBIC_TRANSACTIONS_CONSUMER_BROKER_BOOTSTRAP_SERVERS: "localhost:9092" # set kafka url here
+      QUBIC_TRANSACTIONS_CONSUMER_BROKER_CONSUMER_GROUP: "your-group" # set for target system
       QUBIC_TRANSACTIONS_CONSUMER_ELASTIC_USERNAME: "enter-username-here" # enter elasticsearch username
       QUBIC_TRANSACTIONS_CONSUMER_ELASTIC_PASSWORD: "enter-password-here" # enter elasticsearch password
     volumes:

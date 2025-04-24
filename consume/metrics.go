@@ -45,6 +45,6 @@ func (metrics *Metrics) IncProcessedTicks() {
 	metrics.processedTicksCount.Inc()
 }
 
-func (metrics *Metrics) IncProcessedMessages() {
-	metrics.processedMessageCount.Inc()
+func (metrics *Metrics) IncProcessedMessages(count int) {
+	metrics.processedMessageCount.Add(float64(count))
 }

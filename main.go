@@ -37,7 +37,7 @@ func run() error {
 			Username    string   `conf:"default:qubic-ingestion"`
 			Password    string   `conf:"optional"`
 			IndexName   string   `conf:"default:qubic-transactions-alias"`
-			Certificate string   `conf:"default:certs/elastic/http_ca.crt"`
+			Certificate string   `conf:"default:http_ca.crt"`
 			MaxRetries  int      `conf:"default:15"`
 			Stub        bool     `conf:"optional"` // only for testing
 		}
@@ -118,8 +118,11 @@ func run() error {
 	}
 	metrics := consume.NewMetrics(cfg.Broker.MetricsNamespace)
 	consumer := consume.NewTransactionConsumer(kcl, elasticClient, metrics)
+	procError := make(chan error, 1)
 	if cfg.Sync.Enabled {
-		go consumer.Consume() // TODO go func with channel
+		go func() {
+			procError <- consumer.Consume()
+		}()
 	} else {
 		log.Println("[WARN] main: Message consuming disabled")
 	}
@@ -127,12 +130,13 @@ func run() error {
 	shutdown := make(chan os.Signal, 1)
 	signal.Notify(shutdown, os.Interrupt, syscall.SIGTERM)
 
-	// metrics endpoint
+	// status and metrics endpoint
+	serverError := make(chan error, 1)
 	go func() {
 		log.Printf("main: Starting status and metrics endpoint on port [%d].", cfg.Broker.MetricsPort)
 		http.Handle("/status", &status.Handler{})
 		http.Handle("/metrics", promhttp.Handler())
-		log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", cfg.Broker.MetricsPort), nil))
+		serverError <- http.ListenAndServe(fmt.Sprintf(":%d", cfg.Broker.MetricsPort), nil)
 	}()
 
 	log.Println("main: Service started.")
@@ -142,6 +146,10 @@ func run() error {
 		case <-shutdown:
 			log.Println("main: Received shutdown signal, shutting down...")
 			return nil
+		case err := <-procError:
+			return fmt.Errorf("processing error: %v", err)
+		case err := <-serverError:
+			return fmt.Errorf("error starting server: %v", err)
 		}
 	}
 }
