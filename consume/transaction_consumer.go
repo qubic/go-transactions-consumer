@@ -68,8 +68,8 @@ func (c *TransactionConsumer) consumeBatch() (int, error) {
 	ctx := context.Background()
 	fetches := c.kafkaClient.PollRecords(ctx, 1000) // batch process max x messages in one run
 	if errs := fetches.Errors(); len(errs) > 0 {
-		// All errors are retried internally when fetching, but non-retryable errors are
-		// returned from polls so that users can notice and take action.
+		// Only non-retryable errors are returned.
+		// Errors are typically per partition.
 		for _, err := range errs {
 			log.Printf("Error: %v", err)
 		}
