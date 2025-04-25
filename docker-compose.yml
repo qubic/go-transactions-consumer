@@ -3,7 +3,7 @@ services:
     image: ghcr.io/qubic/go-transactions-consumer:latest # set correct version
     container_name: qubic-transactions-consumer
     ports:
-      - "127.0.0.1:9998:9999"
+      - "127.0.0.1:9996:9999"
     environment:
       QUBIC_TRANSACTIONS_CONSUMER_ELASTIC_ADDRESSES: "https://localhost:9200" # set elasticsearch url here
       QUBIC_TRANSACTIONS_CONSUMER_BROKER_BOOTSTRAP_SERVERS: "localhost:9092" # set kafka url here
@@ -15,7 +15,7 @@ services:
     networks:
       - qubic
     healthcheck:
-      test: [ "CMD", "wget", "-q", "--spider", "http://127.0.0.1:9998/status" ]
+      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:9999/status" ]
       interval: 15s
       timeout: 3s
       retries: 3
