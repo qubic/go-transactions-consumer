@@ -105,9 +105,9 @@ func (c *TransactionConsumer) consumeBatch() (int, error) {
 			c.currentEpoch = tickTransactions.Epoch
 		}
 		c.metrics.IncProcessedTicks()
+		c.metrics.IncProcessedMessages()
 	}
 
-	c.metrics.IncProcessedMessages(len(documents))
 	err := c.elasticClient.BulkIndex(ctx, documents)
 	if err != nil {
 		return -1, errors.Wrapf(err, "Error bulk indexing [%d] documents.", len(documents))
