@@ -84,13 +84,17 @@ func (c *TransactionConsumer) consumeBatch() (int, error) {
 		var tickTransactions TickTransactions
 		err := unmarshalTickTransactions(record, &tickTransactions)
 		if err != nil {
-			return -1, errors.Wrapf(err, "Error unmarshalling value %s", string(record.Value))
+			return -1, errors.Wrapf(err, "Error unmarshalling record value %s", string(record.Value))
 		}
 
 		for _, transaction := range tickTransactions.Transactions {
+			val, err := json.Marshal(transaction)
+			if err != nil {
+				return -1, errors.Wrapf(err, "Error unmarshalling transaction %+v", transaction)
+			}
 			documents = append(documents, EsDocument{
 				id:      transaction.Hash,
-				payload: record.Value,
+				payload: val,
 			})
 		}
 

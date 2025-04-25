@@ -85,9 +85,11 @@ func (c *ElasticClient) BulkIndex(ctx context.Context, data []EsDocument) error 
 }
 
 type FakeElasticClient struct {
+	LatestBatch []EsDocument
 }
 
 func (c *FakeElasticClient) BulkIndex(_ context.Context, data []EsDocument) error {
 	log.Printf("Bulk index [%d] documents.", len(data))
+	c.LatestBatch = data
 	return nil
 }
