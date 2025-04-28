@@ -1,3 +1,5 @@
+# This repository is deprecated. Code moved into go-data-publisher repository.
+
 # go-transactions-consumer
 
 Service for consuming qubic transaction messages from a message broker.
